@@ -1,2 +1,2 @@
 # Island
-Test project for with three.js library
+Test project with three.js library
