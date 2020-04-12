@@ -1,4 +1,5 @@
-# island
+# Island
+Test project with three.js library
 
 ## Project setup
 ```
