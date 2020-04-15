@@ -1,0 +1,22 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "es2020": true,
+    "browser": true
+  },
+  "extends": [
+    "plugin:vue/essential",
+    "@vue/typescript/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "rules": {
+    "indent": ["error", 2],
+    "max-len": [2, 140, 4],
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"],
+    "linebreak-style": ["error", "unix"]
+  }
+}

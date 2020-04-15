@@ -1,25 +1,21 @@
 <template>
-  <Scene />
+  <Canvas/>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator';
-import Scene from './components/Scene.vue';
+import Canvas from './components/Canvas.vue';
 
 @Component({
   components: {
-    Scene,
-  },
+    Canvas
+  }
 })
 export default class App extends Vue {}
 </script>
 
-<style lang="scss">
-  html {
-    height: 100%;
-  }
-  body {
-    margin: 0;
-    height: 100%;
-  }
+<style lang='sass'>
+  html, body
+    height: 100%
+    margin: 0
 </style>
