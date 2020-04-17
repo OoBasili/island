@@ -2,22 +2,29 @@ import { Shader } from '@/types/webgl';
 
 export const DEFAULT_VS: Shader = {
   type: WebGL2RenderingContext.VERTEX_SHADER,
-  value:`
-    attribute vec4 a_position;
+  value:`#version 300 es
+
+    layout(location = 0) in vec4 position;
+    uniform mat4 mvp;
+    out vec4 coords;
 
     void main() {
-      gl_Position = a_position;
+      coords = mvp * position;
+      gl_Position = coords;
     }
   `
 };
 
 export const DEFAULT_FS: Shader = {
   type: WebGL2RenderingContext.FRAGMENT_SHADER,
-  value:`
-    precision mediump float;
-      
+  value:`#version 300 es
+    precision highp float;
+
+    in vec4 coords;
+    out vec4 fragColor;
+
     void main() {
-      gl_FragColor = vec4(1, 0, 0.5, 1);
+      fragColor = vec4(coords.xy, 0. ,1.);
     }
   `
 };

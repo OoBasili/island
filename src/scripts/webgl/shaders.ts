@@ -16,8 +16,9 @@ function loadShader(gl: WebGL2RenderingContext, {type, value}: Shader): WebGLSha
   gl.compileShader(shader);
 
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    const log = gl.getShaderInfoLog(shader);
     gl.deleteShader(shader);
-    throw `Error compiling shader ${shader}: ${gl.getShaderInfoLog(shader)}`;
+    throw `Error compiling shader ${shader}: ${log}`;
   }
 
   return shader;
@@ -38,8 +39,9 @@ export function createProgram(gl: WebGL2RenderingContext, shaders: Shader[]): We
   gl.linkProgram(program);
   
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    const log = gl.getProgramInfoLog(program);
     gl.deleteProgram(program);
-    throw `Error in program linking: ${gl.getProgramInfoLog(program)}`;
+    throw `Error in program linking: ${log}`;
   }
 
   return program;
