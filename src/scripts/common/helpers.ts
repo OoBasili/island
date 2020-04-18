@@ -1,18 +1,20 @@
+import { SizeOptions } from '@/types/webworker';
 /**
  * Resize canvas element pixels.
- * @param {HTMLCanvasElement} canvas The canvas which will be resized.
- * @param {boolean} dpi Optional parameter for HDDPI monitors, default value is true.
+ * @param {WebGL2RenderingContext} gl Current WebGL rendering context with canvas which will be resized.
+ * @param {SizeOptions} size New options for size.
+ * @param {boolean} dpi Optional parameter for HiDPI monitors, default value is true.
  * @return {void}
  */
-export function resizeCanvas(canvas: HTMLCanvasElement, dpi = true): void {
-  let displayWidth = canvas.clientWidth;
-  let displayHeight = canvas.clientHeight;
+export function resize({canvas}: WebGL2RenderingContext, size: SizeOptions, dpi = true): void {
+  let displayWidth = size.width;
+  let displayHeight = size.height;
 
   if (dpi) {
-    const realToCSSPixels = window.devicePixelRatio;
-
-    displayWidth  = Math.floor(displayWidth  * realToCSSPixels);
-    displayHeight = Math.floor(displayHeight * realToCSSPixels);
+    const {pixelRatio} = size;
+    
+    displayWidth  = Math.floor(displayWidth  * pixelRatio);
+    displayHeight = Math.floor(displayHeight * pixelRatio);
   }
  
   if (canvas.width != displayWidth)
