@@ -1,5 +1,5 @@
 <template>
-  <canvas ref='canvas'/>
+  <canvas ref='canvas' tabindex='1'/>
 </template>
 
 <script lang='ts'>
@@ -12,8 +12,14 @@ import { MessageType } from '@/types/webworker';
 export default class Canvas extends Vue {
   private worker = new Worker();
 
+  private beforeMount(): void {
+    window.addEventListener('resize', this.sendSize);
+    window.addEventListener('beforeunload', this.unload);
+  }
+
   private sendSize = (): void => {
     const canvas = this.$refs.canvas as HTMLCanvasElement;
+
     this.worker.postMessage({
       type: MessageType.Resize,
       size: {
@@ -24,25 +30,71 @@ export default class Canvas extends Vue {
     });
   }
 
+  private key = (event: KeyboardEvent) => this.worker.postMessage({
+    type: MessageType.KeyboardEvent,
+    info: event.type,
+    code: event.code
+  });
+
+  private mouse = (event: MouseEvent) => this.worker.postMessage({
+    type: MessageType.MouseEvent,
+    info: event.type,
+    offsetX: event.offsetX,
+    offsetY: event.offsetY
+  });
+
+  private touch = (event: TouchEvent) => this.worker.postMessage({
+    type: MessageType.TouchEvent,
+    info: event.type,
+    clientX: event.targetTouches[0]?.clientX,
+    clientY: event.targetTouches[0]?.clientY
+  });
+
+  private wheel = (event: WheelEvent) => this.worker.postMessage({
+    type: MessageType.WheelEvent,
+    info: event.type,
+    deltaY: event.deltaY
+  });
+
   private mounted(): void {
     const canvas = this.$refs.canvas as HTMLCanvasElement;
-
-    this.addListeners();
-    this.sendSize();
-
     const offscreen = canvas.transferControlToOffscreen();
+
+    this.addCanvasListeners(canvas);
     this.worker.postMessage({
       type: MessageType.Main,
+      size: {
+        width: canvas.clientWidth,
+        height: canvas.clientHeight,
+        pixelRatio: window.devicePixelRatio
+      },
       canvas: offscreen
     }, [offscreen]);
   }
 
-  private addListeners(): void {
-    window.addEventListener('resize', this.sendSize);
-    window.addEventListener('beforeunload', this.unload);
+  private addCanvasListeners(canvas: HTMLCanvasElement): void {
+    canvas.addEventListener('keydown', this.key);
+    canvas.addEventListener('mousedown', this.mouse);
+    canvas.addEventListener('mouseup', this.mouse);
+    canvas.addEventListener('mousemove', this.mouse);
+    canvas.addEventListener('wheel', this.wheel);
+    canvas.addEventListener('touchstart', this.touch);
+    canvas.addEventListener('touchmove', this.touch);
+    canvas.addEventListener('touchend', this.touch);
   }
 
   private removeListeners(): void {
+    const canvas = this.$refs.canvas as HTMLCanvasElement;
+  
+    canvas.removeEventListener('keydown', this.key);
+    canvas.removeEventListener('mousedown', this.mouse);
+    canvas.removeEventListener('mouseup', this.mouse);
+    canvas.removeEventListener('mousemove', this.mouse);
+    canvas.removeEventListener('wheel', this.wheel);
+    canvas.removeEventListener('touchstart', this.touch);
+    canvas.removeEventListener('touchmove', this.touch);
+    canvas.removeEventListener('touchend', this.touch);
+
     window.removeEventListener('resize', this.sendSize);
     window.removeEventListener('beforeunload', this.unload);
   }
@@ -65,4 +117,5 @@ export default class Canvas extends Vue {
     height: 100%
     width: 100%
     display: block
+    outline: none
 </style>

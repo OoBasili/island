@@ -32,12 +32,3 @@ export function resize({canvas}: WebGL2RenderingContext, size: SizeOptions, dpi 
 export function radToDeg(rad: number): number {
   return rad * 180 / Math.PI;
 }
-
-/**
- * Convert degree angle value into radian.
- * @param {number} deg Value in degree.
- * @return {number} Converted value.
- */
-export function degToRad(deg: number): number {
-  return deg * Math.PI / 180;
-}
