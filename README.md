@@ -1,22 +1,13 @@
 # Island
-Test project with three.js library
 
-## Project setup
-```
-yarn install
-```
+This project was created primarily for learning something new, acquiring skills and, of course, for creativity. Perhaps it will also prove useful to someone, and someone will want to help with advice. You're welcome!
 
-### Compiles and hot-reloads for development
+#### Project scripts
 ```
 yarn serve
-```
-
-### Compiles and minifies for production
-```
 yarn build
-```
-
-### Lints and fixes files
-```
 yarn lint
 ```
+#### Additional info
+- Project using *eslint* which have some exported rules and working fine, but at this moment i want to improve it.
+- I'm not support browsers which didn't has *WebGL2* and can't run *Web Worker*
