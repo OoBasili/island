@@ -1,3 +1,5 @@
+import { MouseButton } from '@/render/input-model';
+
 /**
  * Size type.
  * @param {number} width Width of something.
@@ -65,28 +67,30 @@ export interface KeyboardMessage extends BaseEventMessage {
 }
 
 /**
- * Message for mouse events.
- * @param {number} offsetX Provides the offset in the X coordinate of the mouse
- * pointer between that event and the padding edge of the target node.
- * @param {number} offsetY Provides the offset in the Y coordinate of the mouse
- * pointer between that event and the padding edge of the target node.
+ * Position for mouse or touch events.
+ * @param {number} x Provides the offset in the X coordinate of the
+ * pointer between that event and the padding edge of the canvas.
+ * @param {number} y Provides the offset in the Y coordinate of the
+ * pointer between that event and the padding edge of the canvas.
  */
-export interface MouseMessage extends BaseEventMessage {
-  offsetX: number;
-  offsetY: number;
+export interface CanvasPosition {
+  x: number;
+  y: number;
+}
+
+/**
+ * Message for mouse events.
+ * @param {MouseButton} button Indicates which button was pressed on the mouse to trigger the event.
+ * @param {CanvasPosition} position Provides the offset in the X, Y coordinates from start of canvas.
+ */
+export interface MouseMessage extends BaseEventMessage, CanvasPosition {
+  button: MouseButton;
 }
 
 /**
  * Message for touch events.
- * @param {number} clientX X coordinate of the touch point relative to the left
- * edge of the browser viewport, not including any scroll offset.
- * @param {number} clientY Y coordinate of the touch point relative to the top
- * edge of the browser viewport, not including any scroll offset.
  */
-export interface TouchMessage extends BaseEventMessage {
-  clientX?: number;
-  clientY?: number;
-}
+export interface TouchMessage extends BaseEventMessage, Partial<CanvasPosition> {}
 
 /**
  * Message for wheel events.

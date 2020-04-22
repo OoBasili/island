@@ -7,6 +7,8 @@ import Worker from 'worker-loader!@/render/render.ts';
 
 import { Vue, Component } from 'vue-property-decorator';
 import { MessageType } from '@/types/webworker';
+import { preventDefault } from '@/scripts/common/helpers';
+import { MouseButton } from '@/render/input-model';
 
 @Component
 export default class Canvas extends Vue {
@@ -36,18 +38,22 @@ export default class Canvas extends Vue {
     code: event.code
   });
 
-  private mouse = (event: MouseEvent) => this.worker.postMessage({
-    type: MessageType.MouseEvent,
-    info: event.type,
-    offsetX: event.offsetX,
-    offsetY: event.offsetY
-  });
+  private mouse = (event: MouseEvent) => {
+    ['mousedown', 'mouseup'].includes(event.type) && console.log(event.button);
+    this.worker.postMessage({
+      type: MessageType.MouseEvent,
+      info: event.type,
+      button: ['mousedown', 'mouseup'].includes(event.type) ? event.button : MouseButton.Move,
+      x: event.offsetX,
+      y: event.offsetY
+    });
+  }
 
   private touch = (event: TouchEvent) => this.worker.postMessage({
     type: MessageType.TouchEvent,
     info: event.type,
-    clientX: event.targetTouches[0]?.clientX,
-    clientY: event.targetTouches[0]?.clientY
+    x: event.targetTouches[0]?.clientX,
+    y: event.targetTouches[0]?.clientY
   });
 
   private wheel = (event: WheelEvent) => this.worker.postMessage({
@@ -74,26 +80,36 @@ export default class Canvas extends Vue {
 
   private addCanvasListeners(canvas: HTMLCanvasElement): void {
     canvas.addEventListener('keydown', this.key);
+    canvas.addEventListener('keyup', this.key);
     canvas.addEventListener('mousedown', this.mouse);
     canvas.addEventListener('mouseup', this.mouse);
+    canvas.addEventListener('mouseover', this.mouse);
     canvas.addEventListener('mousemove', this.mouse);
+    canvas.addEventListener('mouseout', this.mouse);
     canvas.addEventListener('wheel', this.wheel);
     canvas.addEventListener('touchstart', this.touch);
     canvas.addEventListener('touchmove', this.touch);
     canvas.addEventListener('touchend', this.touch);
+    canvas.addEventListener('touchcancel', this.touch);
+    canvas.addEventListener('contextmenu', preventDefault);
   }
 
   private removeListeners(): void {
     const canvas = this.$refs.canvas as HTMLCanvasElement;
   
     canvas.removeEventListener('keydown', this.key);
+    canvas.removeEventListener('keyup', this.key);
     canvas.removeEventListener('mousedown', this.mouse);
     canvas.removeEventListener('mouseup', this.mouse);
+    canvas.removeEventListener('mouseover', this.mouse);
     canvas.removeEventListener('mousemove', this.mouse);
+    canvas.removeEventListener('mouseout', this.mouse);
     canvas.removeEventListener('wheel', this.wheel);
     canvas.removeEventListener('touchstart', this.touch);
     canvas.removeEventListener('touchmove', this.touch);
     canvas.removeEventListener('touchend', this.touch);
+    canvas.removeEventListener('touchcancel', this.touch);
+    canvas.removeEventListener('contextmenu', preventDefault);
 
     window.removeEventListener('resize', this.sendSize);
     window.removeEventListener('beforeunload', this.unload);
@@ -118,4 +134,7 @@ export default class Canvas extends Vue {
     width: 100%
     display: block
     outline: none
+    cursor: url(../assets/cursor.png), auto
+    &:active
+      cursor: none
 </style>

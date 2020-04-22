@@ -32,3 +32,9 @@ export function resize({canvas}: WebGL2RenderingContext, size: SizeOptions, dpi 
 export function radToDeg(rad: number): number {
   return rad * 180 / Math.PI;
 }
+
+export function inRange(value: number, range: [number, number]): boolean {
+  return value >= range[0] && value <= range[1];
+}
+
+export const preventDefault = (event: Event): void => event.preventDefault(); 
